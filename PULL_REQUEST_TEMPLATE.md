@@ -24,5 +24,7 @@ Wenn du einen Pull-Request stellst, teile uns bitte deine Änderungen mit, indem
   - [ ] Date-Angaben 
     - [ ] stimmen im Header und im Dateinamen überein
     - [ ] stehen auf dem heutigen Tag (aber in der Vergangenheit)
-
+- **Publish your XML for blog-conversion**
+    Important: This needs to be done AFTER MERGING your blogpost into the MASTER-branch of this project.
+  - [ ] Head over to the (Jekyll2cms instructions](https://github.com/adessoAG/jekyll2cms/blob/master/README.md#1-only-using-jekyll2cms-for-blogpost-conversion), execute instruction and check if xml was generated.
 
