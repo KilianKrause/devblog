@@ -1,8 +1,8 @@
 ---
 layout: [post, post-xml]              # Pflichtfeld. Nicht ändern!
 title:  "Rust für Java-Entwickler - Teil 2" # Pflichtfeld. Bitte einen Titel für den Blog Post angeben.
-date:   2019-12-04 10:00              # Pflichtfeld. Format "YYYY-MM-DD HH:MM". Muss für Veröffentlichung in der Vergangenheit liegen. (Für Preview egal)
-modified_date: 2019-12-04             # Optional. Muss angegeben werden, wenn eine bestehende Datei geändert wird.
+date:   2019-12-05 10:00              # Pflichtfeld. Format "YYYY-MM-DD HH:MM". Muss für Veröffentlichung in der Vergangenheit liegen. (Für Preview egal)
+modified_date: 2019-12-05             # Optional. Muss angegeben werden, wenn eine bestehende Datei geändert wird.
 author: kiliankrause                  # Pflichtfeld. Es muss in der "authors.yml" einen Eintrag mit diesem Namen geben.
 categories: [Softwareentwicklung]     # Pflichtfeld. Maximal eine der angegebenen Kategorien verwenden.
 tags: [Rust, Actix-Web]               # Bitte auf Großschreibung achten.
@@ -12,8 +12,8 @@ Im ersten Teil dieser Serie haben wir unsere REST-API definiert und implementier
 Dazu haben wir elementare Funktionen des Frameworks kennengelernt, z.B. Request Handler (im Folgenden auch durch RH abgekürzt), Routen, dynamische URL-Parameter und Serialisierung und Deserialisierung mit Json.
 In diesem Teil der Serie möchte ich auf zwei weitere wichtige Aspekte des Frameworks - und allgemein in der Softwareentwicklung - eingehen:
 Fehlerbehandlung und automatisches Testen.
-Bevor wir mit der Fehlerbehandlung starten, müssen wir eine Persistenzschickt einbauen.
-Wir werden hier einfach annehmen, dass die Daten in einer Datei im Json-Format gespeichert werden.
+Bevor wir mit der Fehlerbehandlung starten, müssen wir eine Persistenzschicht einbauen.
+Wir nehmen an, dass die Daten in einer Datei im Json-Format gespeichert werden.
 
 
 # Kommunikation mit dem Dateisystem
@@ -72,8 +72,8 @@ In diesem Absatz werden wir unsere Request Handler deshalb etwas umbauen.
 ## Fehlerbehandlung mit Result
 
 Die klassische Fehlerbehandlung in Rust wird meistens mithilfe der beiden Enums ```Result``` und ```Option``` abgewickelt.
-Wir erinnern uns daran, dass der Typ des Rückgabewerts eines Request Handlers das ```Responder``` Trait implementieren muss.
-Actix bietet uns glücklicherweise eine Standard-Implementierung des ```Responder``` Traits für den ```Result``` Typ an.
+Wir erinnern uns daran, dass der Typ des Rückgabewerts eines Request Handlers das ```Responder```-Trait implementieren muss.
+Actix bietet uns glücklicherweise eine Standard-Implementierung des ```Responder```-Traits für den ```Result```-Typ an.
 Wir erweitern also unsere RHs dahingehend, dass sie Werte vom Typ ```Result``` zurückgeben.
 Im Falle eines Fehlers können wir so dem Benutzer eine entsprechende Fehlermeldung oder einen HTTP-Statuscode liefern.
 
@@ -100,15 +100,15 @@ Um das zu beantworten, müssen wir uns anschauen, wie Actix generell Fehler beha
 
 ## Der Actix-Web-Error
 
-Wenn unsere Request Handler Werte vom Typ ```Result``` zurückliefern, müssen die Typen, die im Falle eines Fehlers zurückgegeben werden, das ```ResponseError``` Trait implementieren.
-Es exisitert aber keine Implementierung dieses Traits für den Datentypen ```String```.
+Wenn unsere Request Handler Werte vom Typ ```Result``` zurückliefern, müssen die Typen, die im Falle eines Fehlers zurückgegeben werden, das ```ResponseError```-Trait implementieren.
+Es exisitert aber keine Implementierung dieses Traits für den Datentyp ```String```.
 Das ist der Grund, aus dem unser Code nicht kompiliert.
-Glücklicherweise liefert uns Actix-Web den ```Error``` Typen für die Fehlerbandlung.
+Glücklicherweise liefert uns Actix-Web den ```Error```-Typen für die Fehlerbehandlung.
 Diese Struktur hat intern eine Referenz auf ein Objekt vom Typ ```ResponseError```.
 
 Wir können also in unseren RHs angeben, dass im Falle eines Fehlers ein Objekt vom Typ ```Error``` zurückgegeben wird.
-Dieser kann dann vom Framework zu einer HTTP-Response konvertiert und an den Client geschickt werden.
-Wir können unsere Signatur dann wie folgt ändern (anstatt ```Json<Person>``` geben wir hier eine ```HttpResponse``` zurück, dessen Body eine Person als Json-Objekt ist):
+Dieser kann vom Framework zu einer HTTP-Response konvertiert und an den Client geschickt werden.
+Wir können unsere Signatur dann wie folgt ändern - anstatt ```Json<Person>``` geben wir hier eine ```HttpResponse``` zurück, dessen Body eine Person als Json-Objekt ist:
 
 ```rust
 #[get("/persons/{id}")]
@@ -120,9 +120,9 @@ pub fn get(id: Path<u32>) -> Result<HttpResponse, Error> {
 Optimalerweise wollen wir dann hier einen HTTP-Statuscode und eine entsprechende Fehlermeldung an den Client senden.
 Auch hier bietet das Framework einige Möglichleiten.
 Es gibt verschiedene Hilfs-Funktionen, die einen Wert vom Typ ```Error``` zurückliefern.
-Zum Beispiel gibt es die Funktion ```ErrorNotFound```, die einen beliebigen Typen entgegennimmt, und daraus einen Actix-Error erstellt.
+Zum Beispiel gibt es die Funktion ```ErrorNotFound```, die einen beliebigen Typen entgegennimmt und daraus einen Actix-Error erstellt.
 Dieser wird vom Framework dann zu einer HTTP-Response mit dem entsprechenden Fehlercode und Inhalt konvertiert.
-Für unseren Request Handler sieht das dann so aus:
+Für unseren Request Handler sieht das wie folgt so aus:
 
 ```rust
 #[get("/persons/{id}")]
@@ -140,24 +140,24 @@ pub fn get(id: Path<u32>) -> Result<HttpResponse, Error> {
 ```
 
 Wenn eine Person mit der ID existiert, wird diese als Json zurück an den Client geschickt (mit dem Statuscode 200 - OK).
-Wenn die Person jedoch nicht exisiert, wird eine Http-Response mit Statuscode 404 (Not Found) generiert, und als Body enthält sie die entsprechende Fehlermeldung.
+Falls die Person jedoch nicht exisiert, wird eine Http-Response mit Statuscode 404 (Not Found) generiert, und als Body enthält sie die entsprechende Fehlermeldung.
 Das sieht dann wie folgt aus (die ID ist hier willkürlich gewählt - es sollte nur keine Person mit der ID in der Datei exisitieren):
 
 ![Fehler](/assets/images/posts/Rust-für-Java-Entwickler/error.png)
 
 Actix bietet für die gebräuchlichsten Fehlercodes entsprechende Funktionen an.
-Eine detailiert Auflistung ist [hier](https://actix.rs/actix-web/actix_web/error/index.html) zu finden.
+Eine detailierte Auflistung ist [hier](https://actix.rs/actix-web/actix_web/error/index.html) zu finden.
 
 ## Eigene Fehler definieren
 
-Falls die mitgelieferten Funktionen des Frameworks zur Fehlerbehandlung nicht ausreichen, können wir uns natürlich auch unsere eigenen Fehler-Typen definieren.
-Darauf möchte ich aber an dieser Stelle nicht näher eingehen, und verweise auf die [offizielle Dokumentation](https://actix.rs/docs/errors/).
+Falls die mitgelieferten Funktionen des Frameworks zur Fehlerbehandlung nicht ausreichen, können wir natürlich unsere eigenen Fehler-Typen definieren.
+Darauf möchte ich aber an dieser Stelle nicht näher eingehen und verweise auf die [offizielle Dokumentation](https://actix.rs/docs/errors/).
 
 
 # Testen
 
 Natürlich sollte jede Anwendung gut getestet werden.
-Die Sprache Rust bringt von Haus aus schon eine gute Integration für Tests mit.
+Die Sprache Rust bringt von Haus aus eine gute Integration für Tests mit.
 Falls du damit noch nicht vertraut bist, kannst du gerne [hier](https://doc.rust-lang.org/book/ch11-00-testing.html) einsteigen.
 Actix-Web erleichtert uns darüber hinaus das Schreiben von Unit- und Integrations-Tests.
 Ich möchte hier die Möglichkeiten zum Integrations-Testen näher vorstellen.
@@ -167,19 +167,19 @@ Ich möchte hier die Möglichkeiten zum Integrations-Testen näher vorstellen.
 Noch einige Worte vorab, bevor wir mit dem Testen beginnen können:
 Bisher speichern wir die Personen in einer Datei ```data.json```, die im Code hinterlegt ist.
 Im Folgenden - also beim Schreiben der Tests - können wir der Einfachheit halber davon ausgehen, dass diese Datei eine Testdatei ist.
-Wir müssen den Code also nicht vorher wieder umbauen, um mit dem Testen starten zu können.
+Wir müssen den Code also nicht vorher umbauen, um mit dem Testen starten zu können.
 
 Wir könnten die Datei z.B. wie folgt initialisieren, um darauf dann die Tests laufen zu lassen:
 
 ![Test-Daten](/assets/images/posts/Rust-für-Java-Entwickler/test-data.png)
 
-Jetzt können wir auch mit dem Testen beginnen!
+Jetzt können wir mit dem Testen beginnen!
 
 ## Integrationstests
 
-Wir können für unsere Tests einen Test-Server erstellen.
-An diesen können wir dann unsere Requests schicken, und das erwartete Verhalten überprüfen.
-Das möchte ich hier wieder anhand unseres GET-Requests demonstrieren.
+Wir erstellen für unsere Tests einen Test-Server.
+An diesen schicken wir dann unsere Requests, um das erwartete Verhalten zu überprüfen.
+Das möchte ich hier anhand unseres GET-Requests demonstrieren.
 
 Zunächst erstellen wir ein Test-Modul in unserer main.rs-Datei:
 
@@ -221,13 +221,13 @@ let req = test::TestRequest::get().uri("/persons/5").to_request();
 Wir definieren einen GET-Request mit der "/persons/{id}"-URL, wobei wir als ID 5 angeben.
 Da keine Person mit der ID exisiert, erwarten wir, dass der Server uns einen Fehler liefert.
 
-Wir führen auf der Test-App den entsprechenden Request aus, und speichern die Response, die wir vom Server erhalten in einer Variablen, um darauf später testen zu können.
+Wir führen auf der Test-App den entsprechenden Request aus und speichern die Response, die wir vom Server erhalten, in einer Variablen, um darauf später testen zu können.
 
 ```rust
 let resp = test::block_on(app.call(req)).unwrap();
 ```
 
-Unser kompletter Test letztendlich so aus:
+Unser kompletter Test sieht letztendlich so aus:
 
 ```rust
 #[test]
@@ -249,8 +249,8 @@ assert_eq!(resp.status(), http::StatusCode::NOT_FOUND);
 ```
 testen.
 
-Nun wollen wir auch den Fall testen, dass eine Person mit der ID exisitert.
-Dann werden wir im Test prüfen, ob die ID, der Name und das Alter korrekt ist (also so wie in der Testdatei).
+Nun wollen wir auch den Fall prüfen, dass eine Person mit der ID exisitert.
+Dann werden wir im Test erkennen, ob die ID, der Name und das Alter korrekt ist (also wie in der Testdatei).
 Wir erstellen dazu wieder unsere Test-App und den Request mit einer ID, die in unserer Testdatei existiert.
 
 ```rust
@@ -268,7 +268,7 @@ Diese Funktion rufen wir wie folgt auf:
 let result: person::Person = test::read_response_json(&mut app, req);
 ```
 
-Im der Varialen ```result``` ist jetzt die Person Bob, die ja in der Datei die ID 2 hat.
+In der ```result```-Variable ist jetzt die Person Bob, die in der Datei die ID 2 hat.
 Zum Schluss prüfen wir jetzt noch die einzelnen Attribute und erhalten unseren kompletten Test:
 
 ```rust
@@ -290,7 +290,7 @@ Diejenigen, die sich noch weiter mit den Möglichkeiten von Actix-Web zur Fehlbe
 
 # Fazit
 
-In diesem Teil der Artikel-Serie haben wir gesehen, welche Möglichkeiten Actix-Web uns für die Fehlerbehandlung und das automatische Testen bietet.
+In diesem Teil der Artikel-Serie haben wir gesehen, welche Möglichkeiten Actix-Web für die Fehlerbehandlung und das automatische Testen bietet.
 Auch hier habe ich natürlich nicht die komplette Funktionspalette des Frameworks vorgestellt.
 Doch wir haben einen guten Einblick in die generellen Konzepte  und Funktionsweisen bekommen.
 Wer tiefer in das Framework einsteigen will, kann sich an der [offiziellen Dokumentation](https://actix.rs/docs/) orientieren.
