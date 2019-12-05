@@ -44,7 +44,7 @@ const FILE_NAME: &str = "data.json";
 Der Einfachheit halber wollen wir die möglichen Fehler bei der Serialisierung/Deserialisierung bzw. beim Dateizugriff nicht weiter behandeln.
 Aus diesem Grund rufen wir einfach die ```unwrap()```-Methode auf.
 
-Im Folgenden werde ich die Fehlerbehandlung anhand eines Anwendungsfalls beschreiben (GET-Request auf "/persons/{id}").
+Im Folgenden werde ich die Fehlerbehandlung anhand eines Anwendungsfalls beschreiben (GET-Request auf ```/persons/{id}```).
 Der vollständige Quellcode mit allen Anwendungsfällen unserer REST-API ist auf Github verfügbar - siehe Link am Ende des Artikels.
 
 Hier ist eine Funktion, die uns die Person mit der entsprechenden ID aus der Datei liest:
@@ -300,3 +300,9 @@ Ein Beispiel für eine vollständige App mit Actix ist z.B. [hier](https://githu
 
 Der in diesem Artikel entwickelte Code ist [auf Github](https://github.com/KilianKrause/rest-api-with-actix) verfügbar.
 Der Code ist an einigen Stellen optimiert bzw. modifiziert worden.
+
+Ist Actix-Web ein Kandidat für die Entwicklung eines echten Webservices?
+Meiner Meinung nach ist die Erstellung der REST-API mit Actix-Web sehr intuitiv und mir gefällt das Framework sehr gut.
+Allerdings spielen bei der Entscheidung auch andere Faktoren eine Rolle, wie z.B. ORM-Software, Kommunikation mit anderen Systemen u.v.m.
+Da gibt es in Rust noch viel zu tun und die Java/Spring-Welt ist einfach ausgereifter - was auch verständlich ist, denn Rust ist noch sehr jung.
+Es wird auf jeden Fall interessant sein, die Entwicklung des Frameworks (und die Entwicklung von Rust in der Web-Programmierung generell) zu beobachten.
