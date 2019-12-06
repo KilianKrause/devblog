@@ -1,8 +1,8 @@
 ---
 layout: [post, post-xml]              # Pflichtfeld. Nicht ändern!
 title:  "Rust für Java-Entwickler - Teil 2" # Pflichtfeld. Bitte einen Titel für den Blog Post angeben.
-date:   2019-12-05 10:00              # Pflichtfeld. Format "YYYY-MM-DD HH:MM". Muss für Veröffentlichung in der Vergangenheit liegen. (Für Preview egal)
-modified_date: 2019-12-05             # Optional. Muss angegeben werden, wenn eine bestehende Datei geändert wird.
+date:   2019-12-06 10:00              # Pflichtfeld. Format "YYYY-MM-DD HH:MM". Muss für Veröffentlichung in der Vergangenheit liegen. (Für Preview egal)
+modified_date: 2019-12-06             # Optional. Muss angegeben werden, wenn eine bestehende Datei geändert wird.
 author: kiliankrause                  # Pflichtfeld. Es muss in der "authors.yml" einen Eintrag mit diesem Namen geben.
 categories: [Softwareentwicklung]     # Pflichtfeld. Maximal eine der angegebenen Kategorien verwenden.
 tags: [Rust, Actix-Web]               # Bitte auf Großschreibung achten.
@@ -218,7 +218,7 @@ Darüber hinaus müssen wir noch unseren Test-Request definieren:
 let req = test::TestRequest::get().uri("/persons/5").to_request();
 ```
 
-Wir definieren einen GET-Request mit der "/persons/{id}"-URL, wobei wir als ID 5 angeben.
+Wir definieren einen GET-Request mit der ```/persons/{id}```-URL, wobei wir als ID 5 angeben.
 Da keine Person mit der ID exisiert, erwarten wir, dass der Server uns einen Fehler liefert.
 
 Wir führen auf der Test-App den entsprechenden Request aus und speichern die Response, die wir vom Server erhalten, in einer Variablen, um darauf später testen zu können.
@@ -240,7 +240,7 @@ fn test_returns_error() {
 }
 ```
 
-Am Server wird der entsprechende Request Handler für den Pfad "/persons/{id}" aufgerufen.
+Am Server wird der entsprechende Request Handler für den Pfad ```/persons/{id}``` aufgerufen.
 Dieser ruft dann das Repository auf, wo in der Datei nach einer Person mit der ID 5 gesucht wird.
 Da keine solche Person exisitert, wird ```None``` zurückgeliefert und der Request Handler gibt einen Actix-Error mit Fehlercode 404 (Not Found) zurück.
 Auf diesen Fehlercode können wir dann mit

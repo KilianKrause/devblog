@@ -1,8 +1,8 @@
 ---
 layout: [post, post-xml]              # Pflichtfeld. Nicht ändern!
 title:  "Rust für Java-Entwickler - Teil 1" # Pflichtfeld. Bitte einen Titel für den Blog Post angeben.
-date:   2019-12-05 10:00              # Pflichtfeld. Format "YYYY-MM-DD HH:MM". Muss für Veröffentlichung in der Vergangenheit liegen. (Für Preview egal)
-modified_date: 2019-12-05             # Optional. Muss angegeben werden, wenn eine bestehende Datei geändert wird.
+date:   2019-12-06 10:00              # Pflichtfeld. Format "YYYY-MM-DD HH:MM". Muss für Veröffentlichung in der Vergangenheit liegen. (Für Preview egal)
+modified_date: 2019-12-06             # Optional. Muss angegeben werden, wenn eine bestehende Datei geändert wird.
 author: kiliankrause                  # Pflichtfeld. Es muss in der "authors.yml" einen Eintrag mit diesem Namen geben.
 categories: [Softwareentwicklung]     # Pflichtfeld. Maximal eine der angegebenen Kategorien verwenden.
 tags: [Rust, Actix-Web]               # Bitte auf Großschreibung achten.
@@ -41,11 +41,13 @@ Wir wollen die Möglichkeit haben, eine Person zu erstellen, zu löschen und zu 
 Außerdem wollen wir Endpoints zur Verfügung stellen, die uns alle oder auch einzelne (durch ihre ID identifizierbare) Personen liefern.
 Wir werden also fünf verschiedene Endpoints implementieren müssen, die wie folgt aussehen:
 
-- GET     /persons
-- GET     /persons/id
-- POST    /persons
-- PUT     /persons/id
-- DELETE  /persons/id
+| HTTP-Verb | Pfad        |
+| --------- | ----------- |
+| GET       | /persons    |
+| GET       | /persons/id |
+| POST      | /persons    |
+| PUT       | /persons/id |
+| DELETE    | /persons/id |
 
 # Request Handler
 
@@ -175,7 +177,7 @@ impl Person {
 
 Zunächst wollen wir unseren REST-Endpoint implementieren, der uns alle Personen liefert.
 Diese sollen uns als JSON-Objekte vom Server geliefert werden.
-Für die Kommunikation mittels JSON stellt uns Actix eine entsprechende Struktur zur Verfügung, die wir importieren müssen.
+Für die Kommunikation mittels JSON stellt uns Actix-Web eine entsprechende Struktur zur Verfügung, die wir importieren müssen.
 
 ```rust
 use actix_web::web::{Json};
@@ -209,9 +211,9 @@ pub fn get_all() -> Json<Vec<Person>> {
 
 Unglücklicherweise kompiliert unser Code nicht.
 Doch woran liegt das?
-Actix weiß nicht, wie aus unserer Personen-Struktur ein JSON-Objekt erzeugt werden soll.
+Actix-Web weiß nicht, wie aus unserer Personen-Struktur ein JSON-Objekt erzeugt werden soll.
 An dieser Stelle müssen wir eine weitere Bibliothek in unser Projekt einbinden, die "serde" heißt und Serialisierung und Deserialisierung von JSON-Objekten ermöglicht.
-Wir ergänzen also unsere Cargo.toml-Datei:
+Wir ergänzen also unsere Cargo.toml:
 
 ```rust
 [dependencies]
@@ -245,7 +247,7 @@ Damit beschäftigen wir uns im folgenden Abschnitt.
 
 Wir wollen in unserer Beispiel-Applikation die Möglichkeit haben, eine Person über ihre ID mit einem GET-Request zu lesen.
 Dafür muss uns das Framework die Möglichkeit bieten, nicht nur statische, sondern auch dynamische URLs für Request Handler zu definieren.
-Die dynamischen Parameter werden in Actix in geschweiften Klammern angegeben.
+Die dynamischen Parameter werden in Actix-Web in geschweiften Klammern angegeben.
 Die Route für unseren GET-Request mit einer Personen ID sieht also wie folgt aus:
 
 ```rust
@@ -263,7 +265,7 @@ pub fn get(id: u32) -> Json<Person> {
 
 Wir erhalten jedoch einen Compilerfehler, wenn wir versuchen, das Projekt zu bauen.
 Das liegt daran, dass jeder Eingabe-Parameter eines RHs das ```FromRequest```-Trait implementieren muss (was offensichtlich für den Typ u32 nicht der Fall ist).
-Glücklicherweise hilft uns Actix auch hier weiter.
+Glücklicherweise hilft uns Actix-Web auch hier weiter.
 Es bietet die Path-Struktur an, welche als Wrapper für Request-Parameter dient.
 Wir müssen also nur unsere ID in einem Path wrappen:
 
@@ -369,5 +371,5 @@ Dort wird auch auf die komplette API-Dokumentation verwiesen.
 Um sich auf das Wesentliche konzentrieren zu können, habe ich die Speicherung der Personen in diesem Artikel nicht implementiert.
 In diesem [Github-Repository](https://github.com/KilianKrause/rest-api-with-actix) ist eine erweiterte Version des Codes zu finden, wo zumindest eine rudimentäre Kommunikation mit dem Dateisystem implementiert ist.
 
-Ein Beispiel für eine vollständige App mit Actix ist z.B. [hier](https://github.com/fairingrey/actix-realworld-example-app) zu finden.
+Ein Beispiel für eine vollständige App mit Actix-Web ist z.B. [hier](https://github.com/fairingrey/actix-realworld-example-app) zu finden.
 Dort wird auch ein ORM für die Speicherung der Personen in einer Datenbank eingesetzt.
