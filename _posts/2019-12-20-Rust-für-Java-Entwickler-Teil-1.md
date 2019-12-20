@@ -1,8 +1,8 @@
 ---
 layout: [post, post-xml]              # Pflichtfeld. Nicht ändern!
 title:  "Rust für Java-Entwickler - Teil 1" # Pflichtfeld. Bitte einen Titel für den Blog Post angeben.
-date:   2019-12-18 13:00              # Pflichtfeld. Format "YYYY-MM-DD HH:MM". Muss für Veröffentlichung in der Vergangenheit liegen. (Für Preview egal)
-modified_date: 2019-12-18             # Optional. Muss angegeben werden, wenn eine bestehende Datei geändert wird.
+date:   2019-12-20 10:00              # Pflichtfeld. Format "YYYY-MM-DD HH:MM". Muss für Veröffentlichung in der Vergangenheit liegen. (Für Preview egal)
+modified_date: 2019-12-20             # Optional. Muss angegeben werden, wenn eine bestehende Datei geändert wird.
 author: kiliankrause                  # Pflichtfeld. Es muss in der "authors.yml" einen Eintrag mit diesem Namen geben.
 categories: [Softwareentwicklung]     # Pflichtfeld. Maximal eine der angegebenen Kategorien verwenden.
 tags: [Rust, Actix-Web]               # Bitte auf Großschreibung achten.
@@ -41,13 +41,13 @@ Wir wollen die Möglichkeit haben, eine Person zu erstellen, zu löschen und zu 
 Außerdem wollen wir Endpoints zur Verfügung stellen, die uns alle oder auch einzelne (durch ihre ID identifizierbare) Personen liefern.
 Wir werden also fünf verschiedene Endpoints implementieren müssen, die wie folgt aussehen:
 
-```
-* GET    /persons   
-* GET    /persons/id
-* POST   /persons   
-* PUT    /persons/id
+
+* GET &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /persons   
+* GET &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /persons/id
+* POST &nbsp;&nbsp;&nbsp; /persons   
+* PUT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /persons/id
 * DELETE /persons/id
-```
+
 
 # Request Handler
 
